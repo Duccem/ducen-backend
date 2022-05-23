@@ -29,6 +29,18 @@
       ],
       "@ducen/utils/*": [
         "libs/utils/src/*"
+      ],
+      "@ducen/shared": [
+        "libs/shared/src"
+      ],
+      "@ducen/shared/*": [
+        "libs/shared/src/*"
+      ],
+      "@ducen/adaptors": [
+        "libs/adaptors/src"
+      ],
+      "@ducen/adaptors/*": [
+        "libs/adaptors/src/*"
       ]
     }
   }

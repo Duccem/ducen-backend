@@ -36,15 +36,6 @@
         "tsConfigPath": "libs/core/tsconfig.lib.json"
       }
     },
-    "utils": {
-      "type": "library",
-      "root": "libs/utils",
-      "entryFile": "index",
-      "sourceRoot": "libs/utils/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/utils/tsconfig.lib.json"
-      }
-    },
     "event-handler": {
       "type": "application",
       "root": "apps/event-handler",
@@ -52,6 +43,24 @@
       "sourceRoot": "apps/event-handler/src",
       "compilerOptions": {
         "tsConfigPath": "apps/event-handler/tsconfig.app.json"
+      }
+    },
+    "shared": {
+      "type": "library",
+      "root": "libs/shared",
+      "entryFile": "index",
+      "sourceRoot": "libs/shared/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/shared/tsconfig.lib.json"
+      }
+    },
+    "adaptors": {
+      "type": "library",
+      "root": "libs/adaptors",
+      "entryFile": "index",
+      "sourceRoot": "libs/adaptors/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/adaptors/tsconfig.lib.json"
       }
     }
   }

@@ -39,4 +39,7 @@
         "source.organizeImports": true,
         "source.fixAll.eslint": true
     },
+    "cSpell.words": [
+        "ducen"
+    ],
 }
