@@ -18,8 +18,9 @@ export abstract class Aggregate {
     this.domainEvents.push(event);
   }
 
-  public abstract toPrimitives<D extends JsonDocument>(context?: string): D;
-  public static toArray<T extends Aggregate, D extends JsonDocument>(entities: T[]): Array<D> {
+  public abstract toPrimitives<T extends Aggregate>(context?: string): JsonDocument<T>;
+
+  public static toArray<T extends Aggregate>(entities: T[]): Array<JsonDocument<T>> {
     return entities.map((e) => e.toPrimitives());
   }
 }

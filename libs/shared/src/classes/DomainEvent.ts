@@ -1,5 +1,5 @@
 import { JsonDocument } from '../types/JsonDocument';
-import { UuidValueObject } from './ValueObjects/uuid.vo';
+import { UuidValueObject } from './ValueObjects/Dominio/Uuid';
 
 export abstract class DomainEvent {
   static EVENT_NAME: string;
@@ -16,5 +16,5 @@ export abstract class DomainEvent {
     this.eventName = eventName;
   }
 
-  public abstract toPrimitive<T extends JsonDocument>(): T;
+  public abstract toPrimitive<T>(): JsonDocument<T>;
 }

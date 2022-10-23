@@ -3,15 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { MongoClient } from 'mongodb';
-import { MongoConnection } from './adaptors/mongo.connection';
-
-// export const repositories: Provider[] = [
-//   {
-//     provide: 'COMPANY_REPOSITORY',
-//     inject: ['DATABASE_CONNECTION'],
-//     useFactory: (connection: MongoConnection) => new MongoCompanyRepository(connection, Company),
-//   },
-// ];
+import { MongoConnection } from './adaptors/MongoConnection';
 
 export const connection: Provider = {
   provide: 'DATABASE_CONNECTION',
