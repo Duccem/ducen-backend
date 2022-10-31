@@ -1,13 +1,16 @@
-import { AuthStrategy, DatabaseModule, LoggerMiddleware, NestLogger } from '@ducen/adaptors';
-import { CompanyService } from '@ducen/core';
-import { UserAccessService } from '@ducen/core/modules/user/services/UserAccessService';
+import { DatabaseModule, InMemoryEventBus, InMemoryObserversRegister, LoggerMiddleware, NestLogger } from '@ducen/adaptors';
+import { CaslAbilityMaker, CompanyService, ProfileService, ProfileSubscriber, UserAccessService, UserService } from '@ducen/core';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import authConfig from './config/auth.config';
-import { repositories } from './config/database.providers';
+import { redisConnection, store } from './config/cache.providers';
+import { names, repositories } from './config/database.providers';
 import dbConfig from './config/db.config';
 import { getEnv } from './config/env.config';
+import { strategies } from './config/strategies.provider';
+import { AuthController } from './controllers/auth.controller';
 import { CompanyController } from './controllers/company.controller';
+import { ProfileController } from './controllers/profile.controller';
 import { UserController } from './controllers/user.controller';
 import { MainApiController } from './main-api.controller';
 import { MainApiService } from './main-api.service';
@@ -19,13 +22,18 @@ import { MainApiService } from './main-api.service';
       envFilePath: getEnv(),
       load: [dbConfig, authConfig],
     }),
-    DatabaseModule.register({ repositories: repositories, repositories_names: ['COMPANY_REPOSITORY', 'USER_REPOSITORY'] }),
+    DatabaseModule.register({ repositories: repositories, repositories_names: names }),
   ],
-  controllers: [MainApiController, CompanyController, UserController],
+  controllers: [MainApiController, CompanyController, UserController, AuthController, ProfileController],
   providers: [
     MainApiService,
     CompanyService,
     UserAccessService,
+    UserService,
+    ProfileService,
+    ConfigService,
+    ProfileSubscriber,
+    InMemoryObserversRegister,
     { provide: 'MY_LOGGER', useValue: new NestLogger(true) },
     {
       provide: 'AUTH_KEY',
@@ -34,11 +42,21 @@ import { MainApiService } from './main-api.service';
         return configService.get<string>('auth.key');
       },
     },
-    AuthStrategy,
+    {
+      provide: 'ABILITY_MAKER',
+      useValue: new CaslAbilityMaker(),
+    },
+    {
+      provide: 'MESSAGE_QUEUE',
+      useValue: new InMemoryEventBus(),
+    },
+    redisConnection,
+    store,
+    ...strategies,
   ],
 })
 export class MainApiModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('company');
+    consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }

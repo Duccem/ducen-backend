@@ -1,5 +1,5 @@
 import { NestLogger } from '@ducen/adaptors';
-import { join } from 'path';
+import { resolve } from 'path';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 // require('dotenv').config();
@@ -21,7 +21,7 @@ export function getEnv() {
       break;
   }
 
-  const path = join(process.cwd(), 'app/main-api/environment', env);
+  const path = resolve(process.cwd(), 'apps/main-api/environments', env);
 
   logger.log(`Selected env: ${env}`);
   logger.log(`Env file path: ${path}`);

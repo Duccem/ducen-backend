@@ -1,4 +1,4 @@
-import { Aggregate, EnumValueObject, JsonDocument } from '@ducen/shared';
+import { Aggregate, EnumValueObject, JsonDocument, Nullable } from '@ducen/shared';
 import { ErrorTypes, GeneralError } from './Error';
 
 export enum ResponseTypes {
@@ -23,7 +23,7 @@ type Paginate = {
 };
 
 type Payload = {
-  data: JsonDocument<Aggregate> | Array<JsonDocument<Aggregate>>;
+  data: JsonDocument<Aggregate> | Array<JsonDocument<Aggregate>> | Nullable<any>;
   offset?: number;
   limit?: number;
   total?: number;

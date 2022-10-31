@@ -1,21 +1,16 @@
-import { CatchErrors, GeneralResponse, JwtAuthGuard, ResponseModeler, ResponseTypes } from '@ducen/adaptors';
-import { UserAccessService } from '@ducen/core/modules/user/services/UserAccessService';
-import { Body, Controller, Get, Post, Request, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
-
+import { CatchErrors, ResponseModeler } from '@ducen/adaptors';
+import { UserService } from '@ducen/core';
+import { Controller, Get, Req, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 @Controller('user')
 @UseFilters(CatchErrors)
 @UseInterceptors(ResponseModeler)
+@UseGuards(AuthGuard('jwt'))
 export class UserController {
-  constructor(private readonly userService: UserAccessService) {}
-  @Post('login')
-  async login(@Body() data: any) {
-    return await this.userService.login(data.identifier, data.password);
-  }
-
-  @UseGuards(JwtAuthGuard)
+  constructor(private readonly userService: UserService) {}
   @Get('my-info')
-  async getInfo(@Request() req) {
-    console.log(req.user);
-    return new GeneralResponse(ResponseTypes.SUCCESS, { data: {} });
+  async getInfo(@Req() req) {
+    const user = req.user;
+    return this.userService.getUser(user.userId);
   }
 }

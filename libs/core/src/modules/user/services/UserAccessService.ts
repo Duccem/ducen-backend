@@ -14,6 +14,7 @@ export class UserAccessService {
 
   async login(identifier: string, password: string) {
     const user = await this.userRepository.getOneByIdentifier(identifier);
+    console.log(user);
     if (!user) throw new GeneralError(ErrorTypes.UNAUTHORIZED, 'Authenticate error');
 
     const validUser = user.password.compare(password);
@@ -36,6 +37,25 @@ export class UserAccessService {
     ]);
 
     if (existUserByUsername || existUserByEmail) throw new GeneralError(ErrorTypes.BAD_REQUEST, 'The user already exist');
+
+    user.password.encrypt();
+    await this.userRepository.insert(user);
+
+    return new GeneralResponse(ResponseTypes.CREATED, {
+      data: {
+        user: user.toPrimitives('show'),
+        token: user.generateToken(this.authKey),
+      },
+    });
+  }
+
+  async externalSign(userData: JsonDocument<User>) {
+    const user = new User(userData);
+    const existingUser = await this.userRepository.getOneByIdentifier(user.mail);
+    if (existingUser)
+      return new GeneralResponse(ResponseTypes.FOUNDED, {
+        data: { user: existingUser.toPrimitives('show'), token: existingUser.generateToken(this.authKey) },
+      });
 
     user.password.encrypt();
     await this.userRepository.insert(user);

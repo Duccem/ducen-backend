@@ -5,8 +5,8 @@ import { MainApiService } from './main-api.service';
 export class MainApiController {
   constructor(private readonly mainApiService: MainApiService) {}
 
-  @Get()
-  getHello(): string {
-    return this.mainApiService.getHello();
+  @Get('health-check')
+  healthCheck(): string {
+    return this.mainApiService.healthCheck();
   }
 }

@@ -1,5 +1,6 @@
 import { ErrorTypes, GeneralError, GeneralResponse, ResponseTypes } from '@ducen/adaptors';
 import { Inject, Injectable } from '@nestjs/common';
+import { ProfileRepository } from '../../profile/domain/ProfileRepository';
 import { User } from '../../user/domain/User';
 import { UserRepository } from '../../user/domain/UserRepository';
 import { RegisterCompanyDTO } from '../domain/classes/dtos/RegisterCompanyDTO';
@@ -12,6 +13,8 @@ export class CompanyService {
     private companyRepository: CompanyRepository,
     @Inject('USER_REPOSITORY')
     private userRepository: UserRepository,
+    @Inject('PROFILE_REPOSITORY')
+    private profileRepository: ProfileRepository,
     @Inject('AUTH_KEY') private authKey: string,
   ) {}
 
@@ -38,8 +41,8 @@ export class CompanyService {
 
   async register({ company, user }: RegisterCompanyDTO) {
     const newCompany = new Company(company);
+    console.log(newCompany);
     const admin = new User(user);
-
     const [existUserByUsername, existUserByEmail, existCompany] = await Promise.all([
       this.userRepository.getOneByIdentifier(admin.username),
       this.userRepository.getOneByIdentifier(admin.mail),
@@ -54,6 +57,8 @@ export class CompanyService {
     admin.password.encrypt();
     admin.company = company._id;
     await this.userRepository.insert(admin);
+    const profile = await this.profileRepository.get(admin.profile as string);
+    admin.profile = profile;
 
     return new GeneralResponse(ResponseTypes.CREATED, {
       data: {

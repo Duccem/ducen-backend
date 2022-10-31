@@ -1,10 +1,9 @@
-import { Aggregate, JsonDocument, UuidValueObject } from '@ducen/shared';
+import { Aggregate, JsonDocument } from '@ducen/shared';
 import { Exclude, Expose, instanceToPlain } from 'class-transformer';
 import { AdministrativeData, CompanyAdministrativeData } from './CompanyAdministrativeData';
 import { CompanyConfigurationData, ConfigurationData } from './CompanyConfigurationData';
 
 export class Company extends Aggregate {
-  @Exclude() private id: UuidValueObject;
   @Exclude() public administrativeData: CompanyAdministrativeData;
   @Exclude() public configurationData: CompanyConfigurationData;
 
@@ -19,8 +18,7 @@ export class Company extends Aggregate {
   public imageUrl: string;
 
   constructor(data: JsonDocument<Company>) {
-    super();
-    this.id = data._id ? new UuidValueObject(data._id as string) : UuidValueObject.random();
+    super(data);
     this.socialReason = data.socialReason;
     this.serialNumber = data.serialNumber;
     this.fantasyName = data.fantasyName;
@@ -32,11 +30,6 @@ export class Company extends Aggregate {
     this.imageUrl = data.imageUrl;
     this.administrativeData = new CompanyAdministrativeData(data.administrativeData.category, data.administrativeData.plan);
     this.configurationData = new CompanyConfigurationData(data.configurationData.timezone, data.configurationData.lang);
-  }
-
-  @Expose({ name: '_id' })
-  public get _id(): string {
-    return this.id.getValue();
   }
 
   @Expose({ name: 'administrativeData' })

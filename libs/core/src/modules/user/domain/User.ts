@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Aggregate, Email, JsonDocument, Photo, UuidValueObject } from '@ducen/shared';
+import { Aggregate, Email, JsonDocument, Nullable, Photo } from '@ducen/shared';
 import { Exclude, Expose, instanceToPlain } from 'class-transformer';
+import { Company } from '../../company/domain/classes/entities/Company';
+import { Profile } from '../../profile/domain/Profile';
 import { Password } from './Password';
 import { UserAddress } from './UserAddress';
 import { UserBirthDate } from './UserBirthDate';
@@ -8,7 +10,6 @@ import { UserConfiguration, UserConfigurationData } from './UserConfigurationDat
 const jwt = require('jsonwebtoken');
 
 export class User extends Aggregate {
-  @Exclude() private id: UuidValueObject;
   @Exclude() configurationData: UserConfigurationData;
   @Exclude() password: Password;
   @Exclude() email: Email;
@@ -16,20 +17,20 @@ export class User extends Aggregate {
   @Exclude() address: UserAddress;
   @Exclude() photo: Photo;
 
+  public profile: string | Profile;
+  public company: string | Company;
   username: string;
   firstName: string;
   lastName: string;
-  company: string;
   biography?: string;
   sex?: string;
 
   constructor(data: JsonDocument<User>) {
-    super();
-    this.id = data._id ? new UuidValueObject(data._id as string) : UuidValueObject.random();
+    super(data);
+
     this.username = data.username;
     this.firstName = data.firstName;
     this.lastName = data.lastName;
-    this.company = data.company; // TODO: change this to an aggregate related
     this.biography = data.biography;
     this.sex = data.sex;
 
@@ -39,11 +40,13 @@ export class User extends Aggregate {
     this.birthDate = new UserBirthDate(data.birthDate);
     this.address = new UserAddress(data.address.coordinates, data.address.country, data.address.city, data.address.direction);
     this.photo = new Photo(data.photo);
+
+    this.profile = typeof data.profile === 'string' || [null, undefined].includes(data.profile) ? data.profile : new Profile(data.profile);
+    this.company = typeof data.company === 'string' || [null, undefined].includes(data.company) ? data.company : new Company(data.company);
   }
 
-  @Expose({ name: '_id' })
-  public get _id(): string {
-    return this.id.getValue();
+  public get myProfile(): Nullable<Profile> {
+    return typeof this.profile === 'string' ? null : (this.profile as Profile);
   }
 
   @Expose({ name: 'age', groups: ['show'] })
@@ -101,6 +104,7 @@ export class User extends Aggregate {
     const payload = {
       _id: this._id,
       administrativeData: this.configuration,
+      profile: this.myProfile.toPrimitives('show'),
     };
 
     const token = jwt.sign(payload, key, { expiresIn: 60 * 60 * 24 });

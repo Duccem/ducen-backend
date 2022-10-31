@@ -1,4 +1,4 @@
-import { Aggregate, Constructor, Criteria, Nullable } from '@ducen/shared';
+import { Aggregate, Constructor, Criteria, JsonDocument, Nullable } from '@ducen/shared';
 import { Collection } from 'mongodb';
 import { Repository } from '../../domain/Repository';
 import { MongoConnection } from '../MongoConnection';
@@ -24,6 +24,7 @@ export class MongoRepository<T extends Aggregate> implements Repository<T> {
 
   public async get(id: string): Promise<Nullable<T>> {
     const result = await this.collection.findOne({ _id: id });
+    if (!result) return null;
     return new this.model(result);
   }
 
@@ -32,8 +33,8 @@ export class MongoRepository<T extends Aggregate> implements Repository<T> {
     await this.collection.insertOne(aggregate);
   }
 
-  public async update(id: string, data: T): Promise<void> {
-    await this.collection.updateOne({ _id: id }, data.toPrimitives('save'));
+  public async update(id: string, data: JsonDocument<T>): Promise<void> {
+    await this.collection.updateOne({ _id: id }, data);
   }
   public async delete(id: string): Promise<boolean> {
     const result = await this.collection.deleteOne({ _id: id });
@@ -42,5 +43,10 @@ export class MongoRepository<T extends Aggregate> implements Repository<T> {
   }
   public async count(): Promise<number> {
     return await this.collection.countDocuments();
+  }
+
+  public async exist(id: string): Promise<boolean> {
+    const exist = await this.collection.findOne({ _id: id });
+    return exist ? true : false;
   }
 }
