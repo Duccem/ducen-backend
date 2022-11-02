@@ -14,7 +14,12 @@ export const redisConnection: Provider = {
   inject: [ConfigService],
   useFactory: async (configService: ConfigService): Promise<RedisConnection> => {
     try {
-      const client = createClient(configService.get('db.cacheUri'));
+      let client;
+      if (configService.get('db.cacheUri')) {
+        client = createClient({ url: configService.get('db.cacheUri') });
+      } else {
+        client = createClient();
+      }
       await client.connect();
       return new RedisConnection(client);
     } catch (error) {
