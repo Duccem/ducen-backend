@@ -21,7 +21,7 @@ export function getEnv() {
       break;
   }
 
-  const path = resolve(process.cwd(), 'apps/main-api/environments', env);
+  const path = resolve(process.cwd(), 'environments', env);
 
   logger.log(`Selected env: ${env}`);
   logger.log(`Env file path: ${path}`);

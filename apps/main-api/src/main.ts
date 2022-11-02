@@ -5,7 +5,7 @@ import { MainApiModule } from './main-api.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(MainApiModule, {
-    logger: new NestLogger(true),
+    logger: new NestLogger(),
   });
   app.use(
     session({

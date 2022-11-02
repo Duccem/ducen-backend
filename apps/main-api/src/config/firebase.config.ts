@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
-import * as srvAcc from '../../environments/ducen-google-services.json';
+import * as srvAcc from './ducen-google-services.json';
 
 export default registerAs('firebase', () => {
   return {
