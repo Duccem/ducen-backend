@@ -1,5 +1,6 @@
 import { RedisConnection, RedisStore } from '@ducen/adaptors';
 import { Provider } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { createClient } from 'redis';
 
 export const store: Provider = {
@@ -10,9 +11,10 @@ export const store: Provider = {
 
 export const redisConnection: Provider = {
   provide: 'CACHE_CONNECTION',
-  useFactory: async (): Promise<RedisConnection> => {
+  inject: [ConfigService],
+  useFactory: async (configService: ConfigService): Promise<RedisConnection> => {
     try {
-      const client = createClient();
+      const client = createClient(configService.get('db.cacheUri'));
       await client.connect();
       return new RedisConnection(client);
     } catch (error) {

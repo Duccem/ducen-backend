@@ -1,23 +1,14 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/ducen-backend/src",
+  "sourceRoot": "apps/main-api/src",
   "monorepo": true,
-  "root": "apps/ducen-backend",
+  "root": "apps/main-api",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "apps/ducen-backend/tsconfig.app.json"
+    "tsConfigPath": "apps/main-api/tsconfig.app.json"
   },
   "projects": {
-    "ducen-backend": {
-      "type": "application",
-      "root": "apps/ducen-backend",
-      "entryFile": "main",
-      "sourceRoot": "apps/ducen-backend/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/ducen-backend/tsconfig.app.json"
-      }
-    },
     "main-api": {
       "type": "application",
       "root": "apps/main-api",
