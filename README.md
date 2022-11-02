@@ -1,45 +1,24 @@
-## Description
+# Ducen Backend
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Version: 0.0.7
+- Author: José Véliz [(Duccem)](https://github.com/Duccem)
+
+## About
+
+This is the backend of the product Ducen, an software of team and projects management,
+this backend is compound by the main rest api that manage the auth, resource life cycle
+etc. And have other microllits services that help the system to manage sub task.
 
 ## Installation
 
-```bash
-$ npm install
-```
+## Architecture
 
-## Running the app
+## API Documentation
 
-```bash
-# development
-$ npm run start
+### Contributing
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- [José Véliz (Duccem)](https://github.com/Duccem)
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+MIT

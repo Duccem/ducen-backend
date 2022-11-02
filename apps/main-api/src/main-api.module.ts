@@ -1,4 +1,4 @@
-import { DatabaseModule, InMemoryEventBus, InMemoryObserversRegister, LoggerMiddleware, NestLogger } from '@ducen/adaptors';
+import { DatabaseModule, FirebaseSender, InMemoryEventBus, InMemoryObserversRegister, LoggerMiddleware, NestLogger } from '@ducen/adaptors';
 import { CaslAbilityMaker, CompanyService, ProfileService, ProfileSubscriber, UserAccessService, UserService } from '@ducen/core';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -7,6 +7,7 @@ import { redisConnection, store } from './config/cache.providers';
 import { names, repositories } from './config/database.providers';
 import dbConfig from './config/db.config';
 import { getEnv } from './config/env.config';
+import firebaseConfig from './config/firebase.config';
 import { strategies } from './config/strategies.provider';
 import { AuthController } from './controllers/auth.controller';
 import { CompanyController } from './controllers/company.controller';
@@ -20,7 +21,7 @@ import { MainApiService } from './main-api.service';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: getEnv(),
-      load: [dbConfig, authConfig],
+      load: [dbConfig, authConfig, firebaseConfig],
     }),
     DatabaseModule.register({ repositories: repositories, repositories_names: names }),
   ],
@@ -34,6 +35,7 @@ import { MainApiService } from './main-api.service';
     ConfigService,
     ProfileSubscriber,
     InMemoryObserversRegister,
+    FirebaseSender,
     { provide: 'MY_LOGGER', useValue: new NestLogger(true) },
     {
       provide: 'AUTH_KEY',
