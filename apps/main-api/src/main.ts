@@ -7,7 +7,6 @@ async function bootstrap() {
   const app = await NestFactory.create(MainApiModule, {
     logger: new NestLogger(),
   });
-  console.log(process.env.PORT);
   app.use(
     session({
       secret: 'my-secret',
@@ -15,6 +14,6 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
