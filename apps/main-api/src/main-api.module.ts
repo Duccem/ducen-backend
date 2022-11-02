@@ -36,7 +36,7 @@ import { MainApiService } from './main-api.service';
     ProfileSubscriber,
     InMemoryObserversRegister,
     FirebaseSender,
-    { provide: 'MY_LOGGER', useValue: new NestLogger(true) },
+    { provide: 'MY_LOGGER', useValue: new NestLogger() },
     {
       provide: 'AUTH_KEY',
       inject: [ConfigService],
