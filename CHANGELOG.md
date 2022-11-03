@@ -1,7 +1,11 @@
 # Changelog Ducen
 
-- Actual version: 0.0.7
+- Actual version: 0.0.8
 - Author: José Véliz [(Duccem)](https://github.com/Duccem)
+
+## [0.0.8] Deployment configurations 2022-11-02
+
+- Railway configuration to deployment
 
 ## [0.0.7] Notifications and emails 2022-11-01
 

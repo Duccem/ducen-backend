@@ -53,6 +53,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/adaptors/tsconfig.lib.json"
       }
+    },
+    "cron-scheduler": {
+      "type": "application",
+      "root": "apps/cron-scheduler",
+      "entryFile": "main",
+      "sourceRoot": "apps/cron-scheduler/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/cron-scheduler/tsconfig.app.json"
+      }
     }
   }
 }
