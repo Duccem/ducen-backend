@@ -86,6 +86,7 @@ The structure folder follow the DDD and Hexagonal architecture philosophy (Domai
 ## Other links
 
 - [Changelog](https://github.com/Duccem/ducen-backend/blob/main/CHANGELOG.md)
+- [Main API](https://github.com/Duccem/ducen-backend/tree/main/apps/main-api)
 
 ## Contributing
 
