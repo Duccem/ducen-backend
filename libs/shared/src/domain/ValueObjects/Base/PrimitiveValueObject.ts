@@ -1,4 +1,4 @@
-import { Primitive } from '../../../types/Primitive';
+import { Primitive } from '../../types/Primitive';
 
 export abstract class PrimitiveValueObject<T extends Primitive> {
   public value: T;

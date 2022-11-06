@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Hola</h1>
+  <button id="request-permissions">
+    Solicitar permisos
+  </button>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-app.js";
+    import { getMessaging, getToken } from 'https://www.gstatic.com/firebasejs/9.13.0/firebase-messaging.js';
+    const firebaseConfig = {
+        apiKey: "AIzaSyCilxE4LWycy3kihxRsxrGosXLuSFGl_Qc",
+        authDomain: "ducen-1d5a5.firebaseapp.com",
+        projectId: "ducen-1d5a5",
+        storageBucket: "ducen-1d5a5.appspot.com",
+        messagingSenderId: "855370219440",
+        appId: "1:855370219440:web:4b6594f21318790cf66075"
+    };
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging();
+
+    document.getElementById('request-permissions').addEventListener('click', async ()=> {
+     const token = await getToken(messaging,{ vapidKey: 'BCJJ9_oBDszlnY1zGoPKnbTr52uyvaJYacJOLfMSzochnjGSgsZS0TLAlCdihr_8bZpPjOznscXSQ_Z0h1OmWyg' });
+     const response = await fetch('/api/auth/register-token/1a45df0f-7e0c-42c1-8339-09859b5478f4/'+token, { method: 'POST' } );
+     console.log(response);
+    })
+    messaging.onMessageHandler = (payload) => {
+        console.log("On fg:", payload);
+    }
+  </script>
+</body>
+</html>

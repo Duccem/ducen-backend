@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { MongoClient } from 'mongodb';
-import { MongoConnection } from './adaptors/MongoConnection';
+import { MongoConnection } from './adaptors/Mongo/MongoConnection';
 
 export const connection: Provider = {
   provide: 'DATABASE_CONNECTION',

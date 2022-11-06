@@ -1,6 +1,6 @@
 import { Nullable } from '@ducen/shared';
 import { Db, MongoClient } from 'mongodb';
-import { DBConnection } from '../domain/Connection';
+import { DBConnection } from '../../domain/Connection';
 
 export class MongoConnection implements DBConnection {
   constructor(private database: string, private connection: MongoClient) {}

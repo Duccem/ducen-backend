@@ -1,4 +1,4 @@
-import { DomainEvent } from '../classes/DomainEvent';
+import { DomainEvent } from '../../../../adaptors/src/messaging/domain/DomainEvent';
 
 export type DomainEventClass = {
   EVENT_NAME: string;

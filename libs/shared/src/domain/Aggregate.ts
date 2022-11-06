@@ -1,6 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
-import { JsonDocument } from '../types/JsonDocument';
-import { DomainEvent } from './DomainEvent';
+import { DomainEvent } from '../../../adaptors/src/messaging/domain/DomainEvent';
+import { JsonDocument } from './types/JsonDocument';
 import { UuidValueObject } from './ValueObjects/Dominio/Uuid';
 
 export abstract class Aggregate {

@@ -1,4 +1,4 @@
-import { ErrorTypes, GeneralError, GeneralResponse, ResponseTypes } from '@ducen/adaptors';
+import { Device, DeviceRepository, DeviceType, ErrorTypes, GeneralError, GeneralResponse, ResponseDecorator, ResponseTypes } from '@ducen/adaptors';
 import { JsonDocument } from '@ducen/shared';
 import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../domain/User';
@@ -10,6 +10,8 @@ export class UserAccessService {
     @Inject('USER_REPOSITORY')
     private userRepository: UserRepository,
     @Inject('AUTH_KEY') private authKey: string,
+    @Inject('DEVICE_REPOSITORY')
+    private deviceRepository: DeviceRepository,
   ) {}
 
   async login(identifier: string, password: string) {
@@ -39,7 +41,7 @@ export class UserAccessService {
     if (existUserByUsername || existUserByEmail) throw new GeneralError(ErrorTypes.BAD_REQUEST, 'The user already exist');
 
     user.password.encrypt();
-    await this.userRepository.insert(user);
+    await this.userRepository.persist(user._id, user);
 
     return new GeneralResponse(ResponseTypes.CREATED, {
       data: {
@@ -58,7 +60,7 @@ export class UserAccessService {
       });
 
     user.password.encrypt();
-    await this.userRepository.insert(user);
+    await this.userRepository.persist(user._id, user);
 
     return new GeneralResponse(ResponseTypes.CREATED, {
       data: {
@@ -66,5 +68,26 @@ export class UserAccessService {
         token: user.generateToken(this.authKey),
       },
     });
+  }
+
+  @ResponseDecorator(ResponseTypes.CREATED)
+  async registerToken(userId: string, token: string) {
+    const user = await this.userRepository.get(userId);
+    if (!user) throw new GeneralError(ErrorTypes.NOT_FOUND);
+
+    const devices = await this.deviceRepository.getByUser(userId);
+
+    const found = devices.find((device) => device.token === token);
+    if (found) return null;
+
+    const device = new Device({
+      token,
+      type: DeviceType.WEB,
+      user: userId,
+    });
+
+    await this.deviceRepository.persist(device._id, device);
+
+    return device;
   }
 }

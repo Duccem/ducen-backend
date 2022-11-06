@@ -1,7 +1,13 @@
 # Changelog Ducen
 
-- Actual version: 0.0.8
+- Actual version: 0.0.9
 - Author: José Véliz [(Duccem)](https://github.com/Duccem)
+
+## [0.0.9] Deployment configurations 2022-11-06
+
+- RabbitMQ implementation
+- Internationalization
+- First unit test
 
 ## [0.0.8] Deployment configurations 2022-11-02
 

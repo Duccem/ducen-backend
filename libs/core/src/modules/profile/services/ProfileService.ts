@@ -36,7 +36,7 @@ export class ProfileService {
     if (exist) throw new GeneralError(ErrorTypes.BAD_REQUEST, 'The profile already exist');
 
     const profileCreatedEvent = new ProfileCreatedDomainEvent({
-      _id: profile._id,
+      aggregateId: profile._id,
       name: profile.name,
       entities: profile.policies.map((policy) => policy.value.entity),
     });

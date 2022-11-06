@@ -1,4 +1,4 @@
-import { Primitive } from '@ducen/shared/types/Primitive';
+import { Primitive } from '@ducen/shared/domain/types/Primitive';
 import { EnumValueObject } from './EnumValueObject';
 import { PrimitiveValueObject } from './PrimitiveValueObject';
 

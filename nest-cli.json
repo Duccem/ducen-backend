@@ -15,7 +15,9 @@
       "entryFile": "main",
       "sourceRoot": "apps/main-api/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/main-api/tsconfig.app.json"
+        "tsConfigPath": "apps/main-api/tsconfig.app.json",
+        "assets": ["apps/main-api/src/public/**/*", "apps/main-api/src/views/**/*"],
+        "watchAssets": true
       }
     },
     "core": {

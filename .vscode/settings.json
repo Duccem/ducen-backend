@@ -27,7 +27,8 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        "node_modules": true
+        "node_modules": true,
+        "dist": true
     },
     "editor.tabSize": 2,
     "files.insertFinalNewline": true,

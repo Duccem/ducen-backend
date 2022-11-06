@@ -11,8 +11,7 @@ export class MailSender {
   private transporter: Transporter;
   constructor(private configService: ConfigService, @Inject('USER_REPOSITORY') private userRepository: UserRepository) {
     this.transporter = nodemailer.createTransport({
-      host: configService.get<string>('mail.host'),
-      port: configService.get<string>('mail.port'),
+      service: 'gmail',
       auth: {
         user: configService.get<string>('mail.username'),
         pass: configService.get<string>('mail.password'),
@@ -24,9 +23,8 @@ export class MailSender {
     const user = await this.userRepository.get(userId);
     if (!user) return;
 
-    const source = readFileSync(join(__dirname, `${templateName}.hbs`), 'utf8');
+    const source = readFileSync(join(process.cwd(), 'apps/main-api/src/templates', `${templateName}.hbs`), 'utf8');
     const template = compile(source);
-
     const options = {
       from: `Ducen <${this.configService.get<string>('mail.fromEmail')}>`,
       to: user.mail,

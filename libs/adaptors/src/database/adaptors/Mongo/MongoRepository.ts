@@ -1,7 +1,7 @@
-import { Aggregate, Constructor, Criteria, JsonDocument, Nullable } from '@ducen/shared';
+import { Aggregate, Constructor, Criteria, Nullable } from '@ducen/shared';
 import { Collection } from 'mongodb';
 import { Repository } from '../../domain/Repository';
-import { MongoConnection } from '../MongoConnection';
+import { MongoConnection } from './MongoConnection';
 import { MongoCriteriaConverter } from './MongoCriteriaConverter';
 
 export class MongoRepository<T extends Aggregate> implements Repository<T> {
@@ -11,15 +11,15 @@ export class MongoRepository<T extends Aggregate> implements Repository<T> {
     return this.connection.getConnection().collection(this.model.name.toLowerCase());
   }
 
-  public async searchByCriteria(criteria?: Criteria): Promise<T[]> {
+  public async criteria(criteria?: Criteria): Promise<T[]> {
     const query = this.converter.convert(criteria);
     const results = await this.collection.find(query.filter, {}).sort(query.sort).skip(query.skip).limit(query.limit).toArray();
     return results.map((r) => new this.model(r));
   }
 
-  public async list(limit = 0, offset = 50): Promise<T[]> {
-    const data = await this.collection.find().skip(offset).limit(limit).toArray();
-    return data.map((r) => new this.model(r));
+  public async aggregate(aggregation: any[]): Promise<T[]> {
+    const results = await this.collection.aggregate(aggregation).toArray();
+    return results.map((r) => new this.model(r));
   }
 
   public async get(id: string): Promise<Nullable<T>> {
@@ -28,14 +28,11 @@ export class MongoRepository<T extends Aggregate> implements Repository<T> {
     return new this.model(result);
   }
 
-  public async insert(data: T): Promise<void> {
-    const aggregate: any = data.toPrimitives('save');
-    await this.collection.insertOne(aggregate);
+  public async persist(id: string, data: T): Promise<void> {
+    const document = { ...data.toPrimitives('save'), _id: id };
+    await this.collection.updateOne({ _id: id }, { $set: document }, { upsert: true });
   }
 
-  public async update(id: string, data: JsonDocument<T>): Promise<void> {
-    await this.collection.updateOne({ _id: id }, data);
-  }
   public async delete(id: string): Promise<boolean> {
     const result = await this.collection.deleteOne({ _id: id });
     if (result.deletedCount == 0) return false;
@@ -48,5 +45,17 @@ export class MongoRepository<T extends Aggregate> implements Repository<T> {
   public async exist(id: string): Promise<boolean> {
     const exist = await this.collection.findOne({ _id: id });
     return exist ? true : false;
+  }
+
+  public async search(text: string) {
+    const documents = await this.collection
+      .find({ $text: { $search: `"${text}"` } })
+      .sort({ score: { $meta: 'textScore' } })
+      .toArray();
+    return documents.map((r) => new this.model(r));
+  }
+
+  public async configureTextIndexes(indexes: any) {
+    await this.collection.createIndex(indexes);
   }
 }

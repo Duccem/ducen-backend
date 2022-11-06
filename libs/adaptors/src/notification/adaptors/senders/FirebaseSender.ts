@@ -24,7 +24,7 @@ export class FirebaseSender {
     });
   }
 
-  async SendPushNotification(userId: string, title: string, body: string, data = {}, actionUrl = null) {
+  async SendPushNotification(userId: string, title: string, body: string, data = {}, actionUrl = '') {
     const user = await this.userRepository.get(userId);
     if (!user) return;
 
@@ -49,15 +49,3 @@ export class FirebaseSender {
     });
   }
 }
-/*
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCilxE4LWycy3kihxRsxrGosXLuSFGl_Qc",
-  authDomain: "ducen-1d5a5.firebaseapp.com",
-  projectId: "ducen-1d5a5",
-  storageBucket: "ducen-1d5a5.appspot.com",
-  messagingSenderId: "855370219440",
-  appId: "1:855370219440:web:4b6594f21318790cf66075"
-};
-
-*/
