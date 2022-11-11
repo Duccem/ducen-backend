@@ -1,4 +1,5 @@
-import { ErrorTypes, GeneralError, GeneralResponse, ResponseTypes } from '@ducen/adaptors';
+import { ErrorTypes, GeneralError, ResponseDecorator, ResponseTypes } from '@ducen/adaptors';
+import { Criteria, Filters, Order, OrderBy, OrderType, OrderTypes } from '@ducen/shared';
 import { Inject, Injectable } from '@nestjs/common';
 import { ProfileRepository } from '../../profile/domain/ProfileRepository';
 import { User } from '../../user/domain/User';
@@ -18,30 +19,34 @@ export class CompanyService {
     @Inject('AUTH_KEY') private authKey: string,
   ) {}
 
+  @ResponseDecorator(ResponseTypes.CREATED)
   async insert(data: any) {
     const company = new Company(data);
     await this.companyRepository.createAndSave(company);
-    return company.toPrimitives('show');
+    return null;
   }
 
+  @ResponseDecorator(ResponseTypes.LISTED)
   async get() {
-    const [companies, count] = await Promise.all([this.companyRepository.list(50, 0), this.companyRepository.count()]);
-    return new GeneralResponse(ResponseTypes.LISTED, {
-      data: Company.toArray(companies),
+    const criteria = new Criteria(new Filters([]), new Order(new OrderBy('id'), new OrderType(OrderTypes.ASC)), 50, 0);
+    const [companies, count] = await Promise.all([this.companyRepository.criteria(criteria), this.companyRepository.count()]);
+    return {
+      data: companies,
       limit: 50,
       offset: 1,
       total: count,
-    });
+    };
   }
 
+  @ResponseDecorator(ResponseTypes.FOUNDED)
   async getOne(id: string) {
     const company = await this.companyRepository.findOne(id);
-    return company.toPrimitives('show');
+    return company;
   }
 
+  @ResponseDecorator(ResponseTypes.CREATED)
   async register({ company, user }: RegisterCompanyDTO) {
     const newCompany = new Company(company);
-    console.log(newCompany);
     const admin = new User(user);
     const [existUserByUsername, existUserByEmail, existCompany] = await Promise.all([
       this.userRepository.getOneByIdentifier(admin.username),
@@ -56,16 +61,14 @@ export class CompanyService {
 
     admin.password.encrypt();
     admin.company = company._id;
-    await this.userRepository.insert(admin);
+    await this.userRepository.persist(admin._id, admin);
     const profile = await this.profileRepository.get(admin.profile as string);
     admin.profile = profile;
 
-    return new GeneralResponse(ResponseTypes.CREATED, {
+    return {
       data: {
-        company: newCompany.toPrimitives('show'),
-        user: admin.toPrimitives('show'),
         token: admin.generateToken(this.authKey),
       },
-    });
+    };
   }
 }

@@ -1,6 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 import { DomainEvent } from '../../../adaptors/src/messaging/domain/DomainEvent';
-import { JsonDocument } from './types/JsonDocument';
+import { Primitives } from './types/Primitives';
 import { UuidValueObject } from './ValueObjects/Dominio/Uuid';
 
 export abstract class Aggregate {
@@ -8,10 +8,10 @@ export abstract class Aggregate {
   private domainEvents: Array<DomainEvent>;
   @Exclude() protected id: UuidValueObject;
 
-  public createdAt: Date;
-  public updatedAt: Date;
+  public createdAt?: Date;
+  public updatedAt?: Date;
 
-  constructor(data: JsonDocument<Aggregate>) {
+  constructor(data: Primitives<Aggregate>) {
     this.domainEvents = [];
     this.id = data._id ? new UuidValueObject(data._id as string) : UuidValueObject.random();
     this.createdAt = data.createdAt ? data.createdAt : new Date();
@@ -31,9 +31,9 @@ export abstract class Aggregate {
     this.domainEvents.push(event);
   }
 
-  public abstract toPrimitives<T extends Aggregate>(context?: string): JsonDocument<T>;
+  public abstract toPrimitives<T extends Aggregate>(context?: string): Primitives<T>;
 
-  public static toArray<T extends Aggregate>(entities: T[]): Array<JsonDocument<T>> {
+  public static toArray<T extends Aggregate>(entities: T[]): Array<Primitives<T>> {
     return entities.map((e) => e.toPrimitives());
   }
 }

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Aggregate, Email, JsonDocument, Nullable, Photo } from '@ducen/shared';
+import { Aggregate, Email, GeoPoint, Nullable, Photo, Primitives } from '@ducen/shared';
 import { Exclude, Expose, instanceToPlain } from 'class-transformer';
 import { Company } from '../../company/domain/classes/entities/Company';
 import { Profile } from '../../profile/domain/Profile';
@@ -15,6 +15,7 @@ export class User extends Aggregate {
   @Exclude() email: Email;
   @Exclude() birthDate: UserBirthDate;
   @Exclude() address: UserAddress;
+  @Exclude() geo: GeoPoint;
   @Exclude() photo: Photo;
 
   public profile: string | Profile;
@@ -25,7 +26,7 @@ export class User extends Aggregate {
   biography?: string;
   sex?: string;
 
-  constructor(data: JsonDocument<User>) {
+  constructor(data: Primitives<User>) {
     super(data);
 
     this.username = data.username;
@@ -34,15 +35,16 @@ export class User extends Aggregate {
     this.biography = data.biography;
     this.sex = data.sex;
 
-    this.configurationData = new UserConfigurationData(data.configurationData.timezone, data.configurationData.lang, data.configurationData.theme);
+    this.configurationData = new UserConfigurationData(data.configurationData);
     this.password = new Password(data.password);
     this.email = new Email(data.email);
     this.birthDate = new UserBirthDate(data.birthDate);
-    this.address = new UserAddress(data.address.coordinates, data.address.country, data.address.city, data.address.direction);
+    this.address = new UserAddress(data.address);
     this.photo = new Photo(data.photo);
+    this.geo = new GeoPoint(data.geo);
 
-    this.profile = typeof data.profile === 'string' || [null, undefined].includes(data.profile) ? data.profile : new Profile(data.profile);
-    this.company = typeof data.company === 'string' || [null, undefined].includes(data.company) ? data.company : new Company(data.company);
+    this.profile = typeof data.profile === 'string' || [null, undefined].includes(data.profile) ? data.profile : new Profile(data.profile as any);
+    this.company = typeof data.company === 'string' || [null, undefined].includes(data.company) ? data.company : new Company(data.company as any);
   }
 
   public get myProfile(): Nullable<Profile> {
@@ -86,18 +88,16 @@ export class User extends Aggregate {
 
   @Expose({ name: 'address' })
   public get residence(): any {
-    const val = this.address.getValue();
-    return {
-      ...val,
-      coordinates: {
-        latitude: val.coordinates.getValue().latitude.getValue(),
-        longitude: val.coordinates.getValue().longitude.getValue(),
-      },
-    };
+    return this.address.getValue();
   }
 
-  public toPrimitives<User>(context?: string): JsonDocument<User> {
-    return <JsonDocument<User>>instanceToPlain(this, { groups: [context] });
+  @Expose({ name: 'geo' })
+  public get point(): any {
+    return this.geo.getValue();
+  }
+
+  public toPrimitives<User>(context?: string): Primitives<User> {
+    return <Primitives<User>>instanceToPlain(this, { groups: [context] });
   }
 
   public generateToken(key: string): string {

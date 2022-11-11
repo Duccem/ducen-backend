@@ -1,5 +1,4 @@
-import { JsonDocument } from '../../../../shared/src/domain/types/JsonDocument';
-import { UuidValueObject } from '../../../../shared/src/domain/ValueObjects/Dominio/Uuid';
+import { Primitives, UuidValueObject } from '@ducen/shared';
 
 export abstract class DomainEvent {
   static EVENT_NAME: string;
@@ -16,7 +15,7 @@ export abstract class DomainEvent {
     this.eventName = eventName;
   }
 
-  public abstract toPrimitive<T>(): JsonDocument<T>;
+  public abstract toPrimitive<T>(): Primitives<T>;
 }
 
 export type DomainEventClass = { EVENT_NAME: string; fromPrimitives(...args: any[]): DomainEvent };

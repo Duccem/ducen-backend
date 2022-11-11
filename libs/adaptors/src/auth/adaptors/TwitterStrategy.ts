@@ -1,5 +1,5 @@
 import { User } from '@ducen/core';
-import { JsonDocument } from '@ducen/shared';
+import { Primitives } from '@ducen/shared';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
@@ -17,7 +17,7 @@ export class TwitterStrategy extends PassportStrategy(Strategy, 'twitter') {
   }
   async validate(accessToken: string, tokenSecret: string, profile: Profile, cb: (err: any, user: any) => void) {
     const { emails, displayName, photos, id, _json } = profile;
-    const user: JsonDocument<User> = {
+    const user: Primitives<User> = {
       email: emails[0].value,
       firstName: displayName.split(' ')[0],
       lastName: displayName.split(' ')[1],

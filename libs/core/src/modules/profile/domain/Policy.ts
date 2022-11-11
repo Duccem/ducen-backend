@@ -1,17 +1,15 @@
-import { CompoundValueObject } from '@ducen/shared';
-import { Actions } from './Action';
-import { Entities } from './Entity';
+import { CompoundValueObject, Primitives } from '@ducen/shared';
 
 export interface Policies {
-  entity: Entities;
-  actions: Actions[];
+  entity: string;
+  actions: string[];
 }
 
 export class Policy extends CompoundValueObject<Policies> {
-  constructor(entity: Entities, actions: Actions[]) {
+  constructor(data: Primitives<Policies>) {
     super({
-      actions: actions,
-      entity: entity,
+      actions: data.actions as string[],
+      entity: data.entity,
     });
   }
 

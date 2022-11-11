@@ -1,4 +1,4 @@
-import { Aggregate, JsonDocument } from '@ducen/shared';
+import { Aggregate, Primitives } from '@ducen/shared';
 import { instanceToPlain } from 'class-transformer';
 import { NotificationType } from './NotificationType';
 
@@ -11,7 +11,7 @@ export class Notification extends Aggregate {
 
   public devices?: string[];
 
-  constructor(data: JsonDocument<Notification>) {
+  constructor(data: Primitives<Notification>) {
     super(data);
     this.user = data.user;
     this.title = data.title;
@@ -20,7 +20,7 @@ export class Notification extends Aggregate {
     this.type = data.type;
     this.devices = data.devices;
   }
-  public toPrimitives(context?: string): JsonDocument<Notification> {
-    return <JsonDocument<Notification>>instanceToPlain(this, { groups: [context] });
+  public toPrimitives(context?: string): Primitives<Notification> {
+    return <Primitives<Notification>>instanceToPlain(this, { groups: [context] });
   }
 }

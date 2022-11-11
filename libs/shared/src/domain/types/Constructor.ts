@@ -1,3 +1,3 @@
-import { JsonDocument } from './JsonDocument';
+import { Primitives } from './Primitives';
 
-export type Constructor<T> = new (payload: JsonDocument<T>) => T;
+export type Constructor<T> = new (payload: Primitives<T>) => T;

@@ -1,4 +1,4 @@
-import { DomainEvent } from '@ducen/shared';
+import { DomainEvent } from '@ducen/adaptors/messaging/domain/DomainEvent';
 
 type ProfileCreatedDomainEventAttributes = {
   readonly name: string;

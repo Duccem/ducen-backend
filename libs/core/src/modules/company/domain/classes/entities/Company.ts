@@ -1,4 +1,4 @@
-import { Aggregate, JsonDocument } from '@ducen/shared';
+import { Aggregate, Primitives } from '@ducen/shared';
 import { Exclude, Expose, instanceToPlain } from 'class-transformer';
 import { AdministrativeData, CompanyAdministrativeData } from './CompanyAdministrativeData';
 import { CompanyConfigurationData, ConfigurationData } from './CompanyConfigurationData';
@@ -17,7 +17,7 @@ export class Company extends Aggregate {
   public objective: string;
   public imageUrl: string;
 
-  constructor(data: JsonDocument<Company>) {
+  constructor(data: Primitives<Company>) {
     super(data);
     this.socialReason = data.socialReason;
     this.serialNumber = data.serialNumber;
@@ -28,8 +28,8 @@ export class Company extends Aggregate {
     this.foundationDate = data.foundationDate;
     this.objective = data.objective;
     this.imageUrl = data.imageUrl;
-    this.administrativeData = new CompanyAdministrativeData(data.administrativeData.category, data.administrativeData.plan);
-    this.configurationData = new CompanyConfigurationData(data.configurationData.timezone, data.configurationData.lang);
+    this.administrativeData = new CompanyAdministrativeData(data.administrativeData);
+    this.configurationData = new CompanyConfigurationData(data.configurationData);
   }
 
   @Expose({ name: 'administrativeData' })
@@ -42,7 +42,7 @@ export class Company extends Aggregate {
     return this.configurationData.getValue();
   }
 
-  public toPrimitives<Company>(context?: string): JsonDocument<Company> {
-    return <JsonDocument<Company>>instanceToPlain(this, { groups: [context] });
+  public toPrimitives<Company>(context?: string): Primitives<Company> {
+    return <Primitives<Company>>instanceToPlain(this, { groups: [context] });
   }
 }

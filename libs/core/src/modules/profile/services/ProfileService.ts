@@ -1,5 +1,5 @@
 import { ErrorTypes, EventBus, GeneralError, GetCacheData, ResponseDecorator, ResponseTypes } from '@ducen/adaptors';
-import { JsonDocument } from '@ducen/shared';
+import { Criteria, Filters, Order, OrderBy, OrderType, OrderTypes, Primitives } from '@ducen/shared';
 import { Inject, Injectable } from '@nestjs/common';
 import { Profile } from '../domain/Profile';
 import { ProfileCreatedDomainEvent } from '../domain/ProfileCreatedDomainEvent';
@@ -14,7 +14,8 @@ export class ProfileService {
     if (cacheData && cacheCount) {
       return { data: cacheData, count: cacheCount };
     }
-    const [profiles, count] = await Promise.all([this.profileRepository.list(50, 0), this.profileRepository.count()]);
+    const criteria = new Criteria(new Filters([]), new Order(new OrderBy('id'), new OrderType(OrderTypes.ASC)), 50, 0);
+    const [profiles, count] = await Promise.all([this.profileRepository.criteria(criteria), this.profileRepository.count()]);
     return { data: profiles, count };
   }
 
@@ -28,7 +29,7 @@ export class ProfileService {
   }
 
   @ResponseDecorator(ResponseTypes.CREATED)
-  async createProfile(data: JsonDocument<Profile>) {
+  async createProfile(data: Primitives<Profile>) {
     const profile = new Profile(data);
 
     const exist = await this.profileRepository.exist(profile._id);
@@ -41,7 +42,7 @@ export class ProfileService {
       entities: profile.policies.map((policy) => policy.value.entity),
     });
 
-    await this.profileRepository.insert(profile);
+    await this.profileRepository.persist(profile._id, profile);
 
     profile.record(profileCreatedEvent);
 
@@ -51,15 +52,13 @@ export class ProfileService {
   }
 
   @ResponseDecorator(ResponseTypes.UPDATED)
-  async updateProfile(id: string, data: JsonDocument<Profile>) {
+  async updateProfile(id: string, data: Primitives<Profile>) {
     const exist = await this.profileRepository.exist(id);
     if (!exist) throw new GeneralError(ErrorTypes.NOT_FOUND, 'Profile not found');
+    const profile = new Profile(data);
+    await this.profileRepository.persist(id, profile);
 
-    await this.profileRepository.update(id, data);
-
-    const profile = await this.profileRepository.get(id);
-
-    return profile;
+    return null;
   }
 
   @ResponseDecorator(ResponseTypes.DELETED)

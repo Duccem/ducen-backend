@@ -1,4 +1,4 @@
-import { Aggregate, EnumValueObject, JsonDocument, Nullable } from '@ducen/shared';
+import { Aggregate, EnumValueObject, Nullable, Primitives } from '@ducen/shared';
 import { ErrorTypes, GeneralError } from './Error';
 
 export enum ResponseTypes {
@@ -23,7 +23,7 @@ type Paginate = {
 };
 
 type Payload = {
-  data: JsonDocument<Aggregate> | Array<JsonDocument<Aggregate>> | Nullable<any>;
+  data: Primitives<Aggregate> | Array<Primitives<Aggregate>> | Nullable<any>;
   offset?: number;
   limit?: number;
   total?: number;
@@ -57,7 +57,7 @@ export class GeneralResponse extends EnumValueObject<ResponseTypes> {
     return this.message || this.RESPONSE_DATA.get(this.value).message;
   }
 
-  public getPayload(): JsonDocument<Aggregate> | Array<JsonDocument<Aggregate>> {
+  public getPayload(): Primitives<Aggregate> | Array<Primitives<Aggregate>> {
     return this.payload.data;
   }
 

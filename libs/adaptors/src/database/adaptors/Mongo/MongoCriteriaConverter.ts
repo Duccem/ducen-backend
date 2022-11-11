@@ -1,13 +1,14 @@
+import { LookUp, Relationship } from '@ducen/shared';
 import { Criteria } from '@ducen/shared/domain/Criteria/Criteria';
 import { Filter } from '@ducen/shared/domain/Criteria/Filter/Filter';
 import { Operator } from '@ducen/shared/domain/Criteria/Filter/FilterOperator';
 import { Filters } from '@ducen/shared/domain/Criteria/Filter/Filters';
 import { Order } from '@ducen/shared/domain/Criteria/Order/Order';
 
-type MongoFilterOperator = '$eq' | '$ne' | '$gt' | '$lt' | '$regex';
-type MongoFilterValue = boolean | string | number;
+type MongoFilterOperator = '$eq' | '$ne' | '$gt' | '$lt' | '$regex' | '$in' | '$nin';
+type MongoFilterValue = boolean | string | number | any;
 type MongoFilterOperation = { [operator in MongoFilterOperator]?: MongoFilterValue };
-type MongoFilter = { [field: string]: MongoFilterOperation } | { [field: string]: { $not: MongoFilterOperation } };
+type MongoFilter = { [field: string]: MongoFilterOperation } | { [field: string]: { $not: MongoFilterOperation } | MongoFilter[] };
 type MongoDirection = 1 | -1;
 type MongoSort = { [field: string]: MongoDirection };
 
@@ -41,8 +42,43 @@ export class MongoCriteriaConverter {
       filter: criteria.hasFilter() ? this.generateFilter(criteria.filters) : {},
       sort: criteria.order.hasOrder() ? this.generateSort(criteria.order) : { _id: -1 },
       skip: criteria.offset || 0,
-      limit: criteria.limit || 0,
+      limit: criteria.limit || 1,
     };
+  }
+
+  public lookUp(lookUps: LookUp[]): any[] {
+    const lookups = lookUps.map((lookup) => {
+      return this.generateLookUp(lookup);
+    });
+    const unwinds = lookUps
+      .filter((l) => l.relationship.value === Relationship.MANY_TO_ONE)
+      .map((lookup) => {
+        return this.generateUnwind(lookup);
+      });
+    return [...lookups, ...unwinds];
+  }
+
+  protected generateLookUp(lookUp: LookUp) {
+    const lookup = {
+      $lookup: {
+        from: lookUp.entity.value,
+        localField: lookUp.entity.value,
+        foreignField: '_id',
+        as: lookUp.entity.value,
+      },
+    };
+    return lookup;
+  }
+
+  protected generateUnwind(lookUp: LookUp) {
+    const unwind = {
+      $unwind: {
+        path: `$${lookUp.entity.value}`,
+        includeArrayIndex: 'string',
+        preserveNullAndEmptyArrays: false,
+      },
+    };
+    return unwind;
   }
 
   protected generateFilter(filters: Filters): MongoFilter {
@@ -55,7 +91,9 @@ export class MongoCriteriaConverter {
 
       return transformer(filter);
     });
-
+    if (filters.exclusive) {
+      return { $or: [...filter] };
+    }
     return Object.assign({}, ...filter);
   }
 

@@ -7,11 +7,11 @@ export interface UserConfiguration {
 }
 
 export class UserConfigurationData extends CompoundValueObject<UserConfiguration> {
-  constructor(tz: string, lang: string, theme: string) {
+  constructor({ timezone, lang, theme }: { timezone: string; lang: string; theme: string }) {
     super({
-      timezone: tz,
-      lang: lang,
-      theme: theme,
+      timezone,
+      lang,
+      theme,
     });
   }
 

@@ -1,17 +1,24 @@
+import { Primitives } from '../../types/Primitives';
 import { CompoundValueObject } from '../Base/CompoundValueObject';
-import { Coordinate } from './Coordinate';
 
 export interface Coordinates {
-  readonly latitude: Coordinate;
-  readonly longitude: Coordinate;
+  readonly latitude: number;
+  readonly longitude: number;
 }
 
 export class GeoPoint extends CompoundValueObject<Coordinates> {
-  constructor(x: number, y: number) {
+  constructor(data: Primitives<Coordinates>) {
     super({
-      latitude: new Coordinate(x, 'x'),
-      longitude: new Coordinate(y, 'y'),
+      latitude: data.latitude,
+      longitude: data.longitude,
     });
+    this.validate(data);
+  }
+
+  protected validate(data: Primitives<Coordinates>): void {
+    if ((data.latitude > 90 && data.latitude < -90) || (data.longitude > 180 && data.longitude < -180)) {
+      throw new Error('Ejes fuera de valores');
+    }
   }
   public getValue(): Coordinates {
     return {

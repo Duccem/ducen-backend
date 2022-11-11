@@ -38,7 +38,7 @@ export class FirebaseSender {
       type: NotificationType.PUSH,
     });
     const tokens = devices.map((device) => device.token);
-    await this.notificationRepository.insert(notification);
+    await this.notificationRepository.persist(notification._id, notification);
     await this.firebaseApp.messaging().sendToDevice(tokens, {
       notification: {
         title,

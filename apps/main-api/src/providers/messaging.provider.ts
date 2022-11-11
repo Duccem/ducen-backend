@@ -15,6 +15,9 @@ export const EventBusConnection: Provider = {
         hostname: configService.get<string>('message.hostname'),
         protocol: configService.get<string>('message.protocol'),
         port: configService.get<number>('message.port'),
+        username: configService.get<string>('message.username'),
+        password: configService.get<string>('message.password'),
+        vhost: configService.get<string>('message.vhost'),
       });
       const channel = await connection.createConfirmChannel();
       await channel.prefetch(1);

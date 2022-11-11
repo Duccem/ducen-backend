@@ -1,4 +1,4 @@
-import { CompoundValueObject } from '@ducen/shared';
+import { CompoundValueObject, Primitives } from '@ducen/shared';
 
 export interface ConfigurationData {
   timezone: string;
@@ -6,7 +6,7 @@ export interface ConfigurationData {
 }
 
 export class CompanyConfigurationData extends CompoundValueObject<ConfigurationData> {
-  constructor(timezone: string, lang: string) {
+  constructor({ lang, timezone }: Primitives<ConfigurationData>) {
     super({
       timezone: timezone,
       lang: lang,

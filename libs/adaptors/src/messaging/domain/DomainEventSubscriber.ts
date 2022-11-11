@@ -1,4 +1,4 @@
-import { DomainEvent, DomainEventClass } from '@ducen/shared';
+import { DomainEvent, DomainEventClass } from './DomainEvent';
 
 export interface DomainEventSubscriber {
   subscribedTo(): Array<DomainEventClass>;

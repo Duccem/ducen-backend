@@ -1,4 +1,4 @@
-import { CompoundValueObject } from '@ducen/shared';
+import { CompoundValueObject, Primitives } from '@ducen/shared';
 
 export interface AdministrativeData {
   category: string;
@@ -6,7 +6,7 @@ export interface AdministrativeData {
 }
 
 export class CompanyAdministrativeData extends CompoundValueObject<AdministrativeData> {
-  constructor(category: string, plan: string) {
+  constructor({ category, plan }: Primitives<AdministrativeData>) {
     super({
       category: category,
       plan: plan,

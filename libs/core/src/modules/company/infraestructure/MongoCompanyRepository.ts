@@ -19,7 +19,7 @@ export class MongoCompanyRepository extends MongoRepository<Company> implements 
   }
 
   async matching(criteria: Criteria): Promise<Company[]> {
-    const data = await this.searchByCriteria(criteria);
+    const data = await this.criteria(criteria);
     return data;
   }
 

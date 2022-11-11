@@ -1,7 +1,7 @@
-import { Aggregate, JsonDocument } from '@ducen/shared';
+import { Aggregate, Primitives } from '@ducen/shared';
 import { Exclude, Expose, instanceToPlain } from 'class-transformer';
 import { Policy } from './Policy';
-import { Role } from './Role';
+import { Role, Roles } from './Role';
 
 export class Profile extends Aggregate {
   public name: string;
@@ -10,10 +10,10 @@ export class Profile extends Aggregate {
   @Exclude() public role: Role;
   @Exclude() public policies: Policy[];
 
-  constructor(data: JsonDocument<Profile>) {
+  constructor(data: Primitives<Profile>) {
     super(data);
-    this.role = new Role(data.role);
-    this.policies = data.policies.map((policy) => new Policy(policy.entity, policy.actions));
+    this.role = new Role(data.role as Roles);
+    this.policies = data.policies.map((policy) => new Policy(policy));
     this.name = data.name;
     this.description = data.description;
   }
@@ -34,7 +34,7 @@ export class Profile extends Aggregate {
     });
   }
 
-  public toPrimitives<Profile>(context?: string): JsonDocument<Profile> {
-    return instanceToPlain(this, { groups: [context] });
+  public toPrimitives<Profile>(context?: string): Primitives<Profile> {
+    return <Primitives<Profile>>instanceToPlain(this, { groups: [context] });
   }
 }

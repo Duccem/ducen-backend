@@ -1,5 +1,5 @@
 import { User } from '@ducen/core';
-import { JsonDocument } from '@ducen/shared';
+import { Primitives } from '@ducen/shared';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
@@ -19,13 +19,13 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
 
   async validate(accessToken: string, refreshToken: string, profile: Profile, done: (err: any, user: any, info?: any) => void): Promise<any> {
     const { emails, name, photos, id } = profile;
-    const user: JsonDocument<User> = {
+    const user: Primitives<User> = {
       email: emails[0].value,
       firstName: name.givenName,
       lastName: name.familyName,
       sex: 'N/D',
       username: emails[0].value,
-      birthDate: new Date().toISOString(),
+      birthDate: new Date(),
       photo: photos[0].value,
       password: id,
       biography: '',
@@ -33,10 +33,11 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
         city: '',
         country: '',
         direction: '',
-        coordinates: {
-          latitude: 0,
-          longitude: 0,
-        },
+        postal: '',
+      },
+      geo: {
+        latitude: 0,
+        longitude: 0,
       },
       configurationData: {
         lang: 'en',

@@ -1,5 +1,4 @@
-import { DomainEventSubscriber } from '@ducen/adaptors';
-import { DomainEvent, DomainEventClass } from '@ducen/shared';
+import { DomainEvent, DomainEventClass, DomainEventSubscriber } from '@ducen/adaptors';
 import { Injectable } from '@nestjs/common';
 import { ProfileCreatedDomainEvent } from '../domain/ProfileCreatedDomainEvent';
 

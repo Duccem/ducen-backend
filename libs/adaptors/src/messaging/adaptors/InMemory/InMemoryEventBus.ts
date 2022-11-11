@@ -1,6 +1,6 @@
-import { DomainEvent } from '@ducen/shared';
 import { Inject } from '@nestjs/common';
 import EventEmitter from 'events';
+import { DomainEvent } from '../../domain/DomainEvent';
 import { DomainEventDeserializer } from '../../domain/DomainEventDeserializer';
 import { DomainEventSerializer } from '../../domain/DomainEventSerializer';
 import { DomainEventSubscriber } from '../../domain/DomainEventSubscriber';

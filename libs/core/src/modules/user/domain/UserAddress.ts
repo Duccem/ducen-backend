@@ -1,19 +1,19 @@
-import { CompoundValueObject, GeoPoint } from '@ducen/shared';
+import { CompoundValueObject, Primitives } from '@ducen/shared';
 
 export interface AddressUser {
-  coordinates: GeoPoint;
   country: string;
   city: string;
   direction: string;
+  postal: string;
 }
 
 export class UserAddress extends CompoundValueObject<AddressUser> {
-  constructor(points: { latitude: number; longitude: number }, country: string, city: string, direction: string) {
+  constructor({ city, country, direction, postal }: Primitives<AddressUser>) {
     super({
-      coordinates: new GeoPoint(points.latitude, points.longitude),
       city,
       country,
       direction,
+      postal,
     });
   }
 
@@ -22,11 +22,7 @@ export class UserAddress extends CompoundValueObject<AddressUser> {
       city: this.value.city,
       country: this.value.country,
       direction: this.value.direction,
-      coordinates: this.value.coordinates,
+      postal: this.value.postal,
     };
-  }
-
-  public get coordinates() {
-    return this.value.coordinates;
   }
 }

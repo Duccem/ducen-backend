@@ -5,7 +5,7 @@ import { MongoConnection } from './MongoConnection';
 import { MongoCriteriaConverter } from './MongoCriteriaConverter';
 
 export class MongoRepository<T extends Aggregate> implements Repository<T> {
-  private converter: MongoCriteriaConverter = new MongoCriteriaConverter();
+  protected converter: MongoCriteriaConverter = new MongoCriteriaConverter();
   constructor(private connection: MongoConnection, private model: Constructor<T>) {}
   public get collection(): Collection {
     return this.connection.getConnection().collection(this.model.name.toLowerCase());

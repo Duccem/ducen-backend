@@ -1,4 +1,4 @@
-import { Aggregate, JsonDocument } from '@ducen/shared';
+import { Aggregate, Primitives } from '@ducen/shared';
 import { instanceToPlain } from 'class-transformer';
 import { DeviceType } from './DeviceType';
 
@@ -7,14 +7,14 @@ export class Device extends Aggregate {
   public token: string;
   public type: DeviceType;
 
-  constructor(data: JsonDocument<Device>) {
+  constructor(data: Primitives<Device>) {
     super(data);
     this.user = data.user;
     this.token = data.token;
     this.type = data.type;
   }
 
-  public toPrimitives(context?: string): JsonDocument<Device> {
-    return instanceToPlain(this, { groups: [context] });
+  public toPrimitives<Device>(context?: string): Primitives<Device> {
+    return <Primitives<Device>>instanceToPlain(this, { groups: [context] });
   }
 }

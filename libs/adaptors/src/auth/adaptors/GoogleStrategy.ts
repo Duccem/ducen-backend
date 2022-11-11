@@ -1,5 +1,5 @@
 import { User } from '@ducen/core';
-import { JsonDocument } from '@ducen/shared';
+import { Primitives } from '@ducen/shared';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
@@ -18,7 +18,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
   async validate(accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback): Promise<any> {
     const { emails, name, photos, id } = profile;
-    const user: JsonDocument<User> = {
+    const user: Primitives<User> = {
       email: emails[0].value,
       firstName: name.givenName,
       lastName: name.familyName,

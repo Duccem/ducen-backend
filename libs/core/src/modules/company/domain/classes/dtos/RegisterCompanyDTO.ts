@@ -1,8 +1,8 @@
 import { User } from '@ducen/core';
-import { JsonDocument } from '@ducen/shared';
+import { Primitives } from '@ducen/shared';
 import { Company } from '../entities/Company';
 
 export class RegisterCompanyDTO {
-  company: JsonDocument<Company>;
-  user: JsonDocument<User>;
+  company: Primitives<Company>;
+  user: Primitives<User>;
 }

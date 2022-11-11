@@ -1,4 +1,4 @@
-import { DomainEvent } from '@ducen/shared';
+import { DomainEvent } from './DomainEvent';
 import { DomainEventSubscriber } from './DomainEventSubscriber';
 
 export interface EventBus {

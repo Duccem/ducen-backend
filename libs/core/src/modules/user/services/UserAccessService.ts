@@ -1,5 +1,5 @@
 import { Device, DeviceRepository, DeviceType, ErrorTypes, GeneralError, GeneralResponse, ResponseDecorator, ResponseTypes } from '@ducen/adaptors';
-import { JsonDocument } from '@ducen/shared';
+import { Primitives } from '@ducen/shared';
 import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../domain/User';
 import { UserRepository } from '../domain/UserRepository';
@@ -16,7 +16,6 @@ export class UserAccessService {
 
   async login(identifier: string, password: string) {
     const user = await this.userRepository.getOneByIdentifier(identifier);
-    console.log(user);
     if (!user) throw new GeneralError(ErrorTypes.UNAUTHORIZED, 'Authenticate error');
 
     const validUser = user.password.compare(password);
@@ -31,7 +30,7 @@ export class UserAccessService {
     });
   }
 
-  async signUp(userData: JsonDocument<User>) {
+  async signUp(userData: Primitives<User>) {
     const user = new User(userData);
     const [existUserByUsername, existUserByEmail] = await Promise.all([
       this.userRepository.getOneByIdentifier(user.username),
@@ -51,7 +50,7 @@ export class UserAccessService {
     });
   }
 
-  async externalSign(userData: JsonDocument<User>) {
+  async externalSign(userData: Primitives<User>) {
     const user = new User(userData);
     const existingUser = await this.userRepository.getOneByIdentifier(user.mail);
     if (existingUser)
@@ -79,12 +78,12 @@ export class UserAccessService {
 
     const found = devices.find((device) => device.token === token);
     if (found) return null;
-
-    const device = new Device({
+    const devicePayload = {
       token,
       type: DeviceType.WEB,
       user: userId,
-    });
+    };
+    const device = new Device(devicePayload as Primitives<Device>);
 
     await this.deviceRepository.persist(device._id, device);
 
